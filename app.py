@@ -110,19 +110,25 @@ try:
 
     st.divider()
 
-    st.subheader("🌡️ Temperature Forecast")
-    fig1 = px.line(
-        df, x="time", y="temperature_2m",
-        markers=True,
-        labels={
-            "time": "Time",
-            "temperature_2m": "Temperature (°C)"
-        }
-    )
-    fig1.update_traces(
+   
+st.subheader("🌡️ Temperature Forecast")
+
+fig1 = px.line(
+    df,
+    x="time",
+    y="temperature_2m",
+    markers=True,
+    labels={
+        "time": "Time",
+        "temperature_2m": "Temperature (°C)"
+    }
+)
+
+fig1.update_traces(
     line=dict(color="#FFB74D", width=3),
     marker=dict(size=7)
 )
+
 fig1.update_layout(
     template="plotly_dark",
     font=dict(color="#FFFFFF", size=13),
@@ -136,7 +142,7 @@ fig1.update_layout(
     )
 )
 
-    st.plotly_chart(fig1, use_container_width=True)
+st.plotly_chart(fig1, use_container_width=True)
 
     col1, col2 = st.columns(2)
 
