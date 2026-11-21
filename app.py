@@ -11,26 +11,44 @@ st.set_page_config(
     layout="wide"
 )
 
+
 st.markdown("""
 <style>
 .stApp {
     background: linear-gradient(135deg, #071526, #102b49);
-    color: white;
+    color: #FFFFFF;
 }
-h1, h2, h3, p, label {
-    color: white !important;
+
+/* Main headings */
+h1, h2, h3 {
+    color: #FFFFFF !important;
 }
+
+/* Normal text */
+p, label, span {
+    color: #B8D8EA;
+}
+
+/* Metric cards */
 [data-testid="stMetric"] {
     background: #193653;
     padding: 20px;
     border-radius: 15px;
     border: 1px solid #315475;
 }
+
+/* Metric values */
 [data-testid="stMetricValue"] {
-    color: #61d4ff;
+    color: #61D4FF;
+}
+
+/* Metric labels */
+[data-testid="stMetricLabel"] {
+    color: #B8D8EA;
 }
 </style>
 """, unsafe_allow_html=True)
+
 
 st.title("🌦️ CHENNAI WEATHER AI")
 st.caption("Your 72-hour weather dashboard | Chennai, Tamil Nadu")
