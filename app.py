@@ -5,42 +5,71 @@ import pandas as pd
 import plotly.express as px
 from datetime import datetime
 
+# PAGE CONFIGURATION
 st.set_page_config(
     page_title="Chennai Weather AI",
     page_icon="🌦️",
     layout="wide"
 )
 
+# CUSTOM DARK THEME
 st.markdown("""
 <style>
+
+/* Main background */
 .stApp {
     background: linear-gradient(135deg, #071526, #102b49);
-    color: #FFFFFF;
+    color: #A6BACB;
 }
-h1, h2, h3 {
-    color: #FFFFFF !important;
+
+/* Main heading */
+h1 {
+    color: #D6E4F0 !important;
 }
+
+/* Subheadings */
+h2, h3 {
+    color: #8AAFC5 !important;
+}
+
+/* Normal text */
 p, label, span {
-    color: #B8D8EA;
+    color: #8299AD;
 }
+
+/* Metric cards */
 [data-testid="stMetric"] {
     background: #193653;
     padding: 20px;
     border-radius: 15px;
     border: 1px solid #315475;
 }
+
+/* Metric values */
 [data-testid="stMetricValue"] {
-    color: #61D4FF;
+    color: #61B8D9;
 }
+
+/* Metric labels */
 [data-testid="stMetricLabel"] {
-    color: #B8D8EA;
+    color: #8AAFC5;
 }
+
+/* Dataframe text */
+[data-testid="stDataFrame"] {
+    color: #A6BACB;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
+
+# DASHBOARD HEADER
 st.title("🌦️ CHENNAI WEATHER AI")
 st.caption("Your 72-hour weather dashboard | Chennai, Tamil Nadu")
 
+
+# WEATHER API
 url = "https://api.open-meteo.com/v1/forecast"
 
 params = {
@@ -56,18 +85,33 @@ params = {
     "timezone": "Asia/Kolkata"
 }
 
+
+# FETCH WEATHER DATA
 @st.cache_data(ttl=1800)
 def get_weather():
-    response = requests.get(url, params=params, timeout=20)
+    response = requests.get(
+        url,
+        params=params,
+        timeout=20
+    )
     response.raise_for_status()
-    return pd.DataFrame(response.json()["hourly"])
+
+    return pd.DataFrame(
+        response.json()["hourly"]
+    )
+
 
 try:
+
     df = get_weather()
+
     df["time"] = pd.to_datetime(df["time"])
 
     now = pd.Timestamp.now()
-    df = df[df["time"] >= now.floor("h")].copy()
+
+    df = df[
+        df["time"] >= now.floor("h")
+    ].copy()
 
     if df.empty:
         st.warning("No upcoming forecast data available.")
@@ -75,27 +119,42 @@ try:
 
     st.success("Live forecast loaded successfully")
 
+
     # WEATHER OVERVIEW
     st.subheader("📊 Weather Overview")
 
     col1, col2, col3, col4 = st.columns(4)
 
-    col1.metric("🌡️ Temperature",
-                f"{df['temperature_2m'].iloc[0]:.1f} °C")
-    col2.metric("💧 Humidity",
-                f"{df['relative_humidity_2m'].iloc[0]:.0f}%")
-    col3.metric("💨 Wind Speed",
-                f"{df['wind_speed_10m'].iloc[0]:.1f} km/h")
-    col4.metric("🌧️ Rainfall",
-                f"{df['precipitation'].iloc[0]:.1f} mm")
+    col1.metric(
+        "🌡️ Temperature",
+        f"{df['temperature_2m'].iloc[0]:.1f} °C"
+    )
+
+    col2.metric(
+        "💧 Humidity",
+        f"{df['relative_humidity_2m'].iloc[0]:.0f}%"
+    )
+
+    col3.metric(
+        "💨 Wind Speed",
+        f"{df['wind_speed_10m'].iloc[0]:.1f} km/h"
+    )
+
+    col4.metric(
+        "🌧️ Rainfall",
+        f"{df['precipitation'].iloc[0]:.1f} mm"
+    )
 
     st.divider()
+
 
     # TEMPERATURE GRAPH
     st.subheader("🌡️ Temperature Forecast")
 
     fig1 = px.line(
-        df, x="time", y="temperature_2m",
+        df,
+        x="time",
+        y="temperature_2m",
         markers=True,
         labels={
             "time": "Time",
@@ -108,13 +167,19 @@ try:
         marker=dict(size=7)
     )
 
+
     # HUMIDITY GRAPH
     st.subheader("💧 Humidity Forecast")
 
     fig2 = px.line(
-        df, x="time", y="relative_humidity_2m",
+        df,
+        x="time",
+        y="relative_humidity_2m",
         markers=True,
-        labels={"relative_humidity_2m": "Humidity (%)"}
+        labels={
+            "time": "Time",
+            "relative_humidity_2m": "Humidity (%)"
+        }
     )
 
     fig2.update_traces(
@@ -122,13 +187,19 @@ try:
         marker=dict(size=7)
     )
 
+
     # WIND SPEED GRAPH
     st.subheader("💨 Wind Speed Forecast")
 
     fig3 = px.line(
-        df, x="time", y="wind_speed_10m",
+        df,
+        x="time",
+        y="wind_speed_10m",
         markers=True,
-        labels={"wind_speed_10m": "Wind Speed (km/h)"}
+        labels={
+            "time": "Time",
+            "wind_speed_10m": "Wind Speed (km/h)"
+        }
     )
 
     fig3.update_traces(
@@ -136,12 +207,18 @@ try:
         marker=dict(size=7)
     )
 
+
     # RAINFALL GRAPH
     st.subheader("🌧️ Rainfall Forecast")
 
     fig4 = px.bar(
-        df, x="time", y="precipitation",
-        labels={"precipitation": "Rainfall (mm)"}
+        df,
+        x="time",
+        y="precipitation",
+        labels={
+            "time": "Time",
+            "precipitation": "Rainfall (mm)"
+        }
     )
 
     fig4.update_traces(
@@ -149,46 +226,107 @@ try:
         marker_line_width=0
     )
 
-    # COMMON GRAPH STYLING
+
+    # COMMON GRAPH DESIGN
     for fig in [fig1, fig2, fig3, fig4]:
+
         fig.update_layout(
             template="plotly_dark",
-            font=dict(color="#FFFFFF", size=13),
-            xaxis=dict(
-                title_font=dict(color="#8BE3FF"),
-                tickfont=dict(color="#FFFFFF")
+
+            paper_bgcolor="#10243A",
+            plot_bgcolor="#10243A",
+
+            font=dict(
+                family="Arial",
+                size=14,
+                color="#A6BACB"
             ),
+
+            xaxis=dict(
+                title_font=dict(
+                    color="#7295AD",
+                    size=15
+                ),
+                tickfont=dict(
+                    color="#A6BACB",
+                    size=12
+                ),
+                showgrid=True,
+                gridcolor="#263D52",
+                zerolinecolor="#263D52"
+            ),
+
             yaxis=dict(
-                title_font=dict(color="#8BE3FF"),
-                tickfont=dict(color="#FFFFFF")
+                title_font=dict(
+                    color="#7295AD",
+                    size=15
+                ),
+                tickfont=dict(
+                    color="#A6BACB",
+                    size=12
+                ),
+                showgrid=True,
+                gridcolor="#263D52",
+                zerolinecolor="#263D52"
+            ),
+
+            legend=dict(
+                font=dict(color="#8299AD")
+            ),
+
+            margin=dict(
+                l=20,
+                r=20,
+                t=30,
+                b=20
             )
         )
 
-    # DISPLAY GRAPHS
-    st.plotly_chart(fig1, use_container_width=True)
 
+    # DISPLAY TEMPERATURE GRAPH
+    st.plotly_chart(
+        fig1,
+        use_container_width=True
+    )
+
+
+    # DISPLAY HUMIDITY AND WIND GRAPHS
     col1, col2 = st.columns(2)
 
     with col1:
-        st.plotly_chart(fig2, use_container_width=True)
+        st.plotly_chart(
+            fig2,
+            use_container_width=True
+        )
 
     with col2:
-        st.plotly_chart(fig3, use_container_width=True)
+        st.plotly_chart(
+            fig3,
+            use_container_width=True
+        )
 
-    st.plotly_chart(fig4, use_container_width=True)
+
+    # DISPLAY RAINFALL GRAPH
+    st.plotly_chart(
+        fig4,
+        use_container_width=True
+    )
 
     st.divider()
 
-    # HOURLY FORECAST TABLE
+
+    # HOURLY WEATHER TABLE
     st.subheader("🕒 Hourly Weather Forecast")
 
-    display_df = df.rename(columns={
-        "time": "Time",
-        "temperature_2m": "Temperature (°C)",
-        "relative_humidity_2m": "Humidity (%)",
-        "precipitation": "Rainfall (mm)",
-        "wind_speed_10m": "Wind Speed (km/h)"
-    })
+    display_df = df.rename(
+        columns={
+            "time": "Time",
+            "temperature_2m": "Temperature (°C)",
+            "relative_humidity_2m": "Humidity (%)",
+            "precipitation": "Rainfall (mm)",
+            "wind_speed_10m": "Wind Speed (km/h)"
+        }
+    )
 
     st.dataframe(
         display_df,
@@ -196,14 +334,21 @@ try:
         hide_index=True
     )
 
+
+    # FOOTER
     st.caption(
         "Weather forecast data provided by Open-Meteo. "
         "This dashboard displays forecast data, not ML predictions."
     )
 
     st.caption(
-        f"Last refreshed: {datetime.now().strftime('%d-%m-%Y %H:%M:%S')}"
+        f"Last refreshed: "
+        f"{datetime.now().strftime('%d-%m-%Y %H:%M:%S')}"
     )
 
+
 except Exception as e:
-    st.error(f"Unable to load weather data: {e}")
+
+    st.error(
+        f"Unable to load weather data: {e}"
+    )
