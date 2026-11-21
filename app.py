@@ -119,7 +119,23 @@ try:
             "temperature_2m": "Temperature (°C)"
         }
     )
-    fig1.update_layout(template="plotly_dark")
+    fig1.update_traces(
+    line=dict(color="#FFB74D", width=3),
+    marker=dict(size=7)
+)
+fig1.update_layout(
+    template="plotly_dark",
+    font=dict(color="#FFFFFF", size=13),
+    xaxis=dict(
+        title_font=dict(color="#8BE3FF"),
+        tickfont=dict(color="#FFFFFF")
+    ),
+    yaxis=dict(
+        title_font=dict(color="#8BE3FF"),
+        tickfont=dict(color="#FFFFFF")
+    )
+)
+
     st.plotly_chart(fig1, use_container_width=True)
 
     col1, col2 = st.columns(2)
@@ -130,7 +146,24 @@ try:
             df, x="time", y="relative_humidity_2m",
             labels={"relative_humidity_2m": "Humidity (%)"}
         )
-        fig2.update_layout(template="plotly_dark")
+        fig2.update_traces(
+    line=dict(color="#29B6F6", width=3),
+    marker=dict(size=7)
+)
+        
+fig2.update_layout(
+    template="plotly_dark",
+    font=dict(color="#FFFFFF", size=13),
+    xaxis=dict(
+        title_font=dict(color="#8BE3FF"),
+        tickfont=dict(color="#FFFFFF")
+    ),
+    yaxis=dict(
+        title_font=dict(color="#8BE3FF"),
+        tickfont=dict(color="#FFFFFF")
+    )
+)
+
         st.plotly_chart(fig2, use_container_width=True)
 
     with col2:
@@ -139,7 +172,24 @@ try:
             df, x="time", y="wind_speed_10m",
             labels={"wind_speed_10m": "Wind Speed (km/h)"}
         )
-        fig3.update_layout(template="plotly_dark")
+        fig3.update_traces(
+    line=dict(color="#AB83FF", width=3),
+    marker=dict(size=7)
+)
+        
+fig3.update_layout(
+    template="plotly_dark",
+    font=dict(color="#FFFFFF", size=13),
+    xaxis=dict(
+        title_font=dict(color="#8BE3FF"),
+        tickfont=dict(color="#FFFFFF")
+    ),
+    yaxis=dict(
+        title_font=dict(color="#8BE3FF"),
+        tickfont=dict(color="#FFFFFF")
+    )
+)
+
         st.plotly_chart(fig3, use_container_width=True)
 
     st.subheader("🌧️ Rainfall Forecast")
@@ -147,7 +197,23 @@ try:
         df, x="time", y="precipitation",
         labels={"precipitation": "Rainfall (mm)"}
     )
-    fig4.update_layout(template="plotly_dark")
+    fig4.update_traces(
+    marker_color="#00DFA2",
+    marker_line_width=0
+)
+fig4.update_layout(
+    template="plotly_dark",
+    font=dict(color="#FFFFFF", size=13),
+    xaxis=dict(
+        title_font=dict(color="#8BE3FF"),
+        tickfont=dict(color="#FFFFFF")
+    ),
+    yaxis=dict(
+        title_font=dict(color="#8BE3FF"),
+        tickfont=dict(color="#FFFFFF")
+    )
+)
+
     st.plotly_chart(fig4, use_container_width=True)
 
     st.divider()
